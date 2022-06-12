@@ -1,12 +1,13 @@
 import "./App.css";
 
 import AwaitingShipment from "./components/AwaitingShipment";
+import { IOrder } from "./types";
 import OrderForm from "./components/OrderForm";
 import OrdersTable from "./components/OrdersTable";
 import { useState } from "react";
 
 const App = () => {
-  const [orders, setOrders] = useState<any>([]);
+  const [orders, setOrders] = useState<IOrder[]>([]);
 
   const deleteOrder = (id: string): void => {
     setOrders((prevOrders) => prevOrders.filter((order) => order.id !== id));
