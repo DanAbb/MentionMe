@@ -6,19 +6,19 @@ interface IOwnProps {
   orders: IOrder[];
 }
 
-export const PendingShipment: React.FC<IOwnProps> = ({ orders }) => {
+export const AwaitingShipment: React.FC<IOwnProps> = ({ orders }) => {
   const [awaitingShipment, setAwaitingShipment] = useState<number>(0);
 
   useEffect(() => {
-    const awaiting = orders.reduce((acc: number, current: IOrder) => {
-      if (current.shipped) {
-        return acc;
-      }
+    setAwaitingShipment(
+      orders.reduce((acc: number, current: IOrder) => {
+        if (current.shipped) {
+          return acc;
+        }
 
-      return acc + 1;
-    }, 0);
-
-    setAwaitingShipment(awaiting);
+        return acc + 1;
+      }, 0)
+    );
   }, [orders]);
 
   return (
@@ -29,4 +29,4 @@ export const PendingShipment: React.FC<IOwnProps> = ({ orders }) => {
   );
 };
 
-export default PendingShipment;
+export default AwaitingShipment;

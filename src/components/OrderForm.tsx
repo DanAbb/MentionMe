@@ -4,8 +4,8 @@ import { nanoid } from "nanoid";
 import { useState } from "react";
 
 interface IOwnProps {
-  setOrders: React.Dispatch<any>;
-  orders: any;
+  setOrders: React.Dispatch<IOrder[]>;
+  orders: IOrder[];
 }
 
 export const OrderForm: React.FC<IOwnProps> = ({ setOrders, orders }) => {
