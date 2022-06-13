@@ -1,110 +1,45 @@
-import { useState } from "react";
-
 import "./App.css";
 
+import AwaitingShipment from "./components/AwaitingShipment";
+import { IOrder } from "./types";
+import OrderForm from "./components/OrderForm";
+import OrdersTable from "./components/OrdersTable";
+import { useState } from "react";
+
 const App = () => {
-  const [orders, setOrders] = useState<any>([]);
+  const [orders, setOrders] = useState<IOrder[]>([]);
 
-  const [date, setDate] = useState("");
-  const [amount, setAmount] = useState("");
-  const [shipped, setShipped] = useState(false);
-
-  const pendingShipment = () => {
-    var c = 0;
-    for (var i = 0; i < orders.length; i++) {
-      if (orders[i].shipped) c++;
-    }
-    return c;
+  const deleteOrder = (id: string): void => {
+    setOrders((prevOrders) => prevOrders.filter((order) => order.id !== id));
   };
 
-  const getItems = () => {
-    var r = [];
+  const shipOrder = (id: string): void => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) => {
+        if (order.id === id) {
+          order.shipped = true;
+        }
 
-    for (var i = 0; i < orders.length; i++) {
-      let index = i;
-
-      r.push(
-        <tr key={index}>
-          <td>{index}</td>
-          <td>{orders[index].amount}</td>
-          <td>{orders[index].shipped ? "Yes" : "No"}</td>
-          <td>
-            <button
-              className="btn btn-sm btn-danger"
-              onClick={() => {
-                setOrders(orders[index].filter((value, id) => index !== id));
-              }}
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      );
-    }
-
-    return r;
+        return order;
+      })
+    );
   };
 
   return (
-    <div className="container mt-3">
-      <form>
-        <div className="mb-3">
-          <label className="form-label">Order Date</label>
-          <input
-            className="form-control"
-            value={date}
-            onChange={(event) => setDate(event.target.value)}
+    <main className="container mt-3">
+      <h1>Ordering System</h1>
+      <OrderForm setOrders={setOrders} orders={orders} />
+      {orders.length ? (
+        <>
+          <AwaitingShipment orders={orders} />
+          <OrdersTable
+            orders={orders}
+            deleteOrder={deleteOrder}
+            shipOrder={shipOrder}
           />
-          <label className="form-label">Order Amount</label>
-          <input
-            type="amount"
-            className="form-control"
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-          />
-        </div>
-        <div className="mb-3 form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            name="shipped"
-            checked={shipped}
-            onChange={(event) => setShipped(event.target.checked)}
-          />
-          <label className="form-check-label">Shipped?</label>
-        </div>
-        <button
-          type="button"
-          onClick={(event) => {
-            setOrders([
-              ...orders,
-              {
-                date,
-                amount,
-                shipped,
-              },
-            ]);
-
-            setAmount("");
-            setShipped(false);
-            setDate("");
-          }}
-          className="btn btn-primary"
-        >
-          Add order
-        </button>
-      </form>
-      <h3 className="mt-3">Oders {pendingShipment()} awaiting shipment</h3>
-      <table className="table table-striped mt-3">
-        <thead>
-          <th>ID</th>
-          <th>Amount</th>
-          <th>Shipped</th>
-          <th>Actions</th>
-        </thead>
-        <tbody>{getItems()}</tbody>
-      </table>
-    </div>
+        </>
+      ) : null}
+    </main>
   );
 };
 
